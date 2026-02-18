@@ -105,6 +105,9 @@ def merge_small_sequences(
     minimum_cluster_size: int = 1,
 ) -> None:
 
+    if len(sequential_clusters) <= 1:  # orig: (no guard)
+        return  # orig: (no guard)
+
     while True:
 
         i, _ = findfirst(
@@ -128,10 +131,13 @@ def merge_small_sequences(
                 sequential_clusters[i], sequential_clusters[i + 1], similarity_matrix
             )
 
-        if similarity_prev > similarity_next:
-            merge_ind = i - 1
-        else:
-            merge_ind = i + 1
+        if similarity_prev > similarity_next:  # orig: if similarity_prev > similarity_next:
+            merge_ind = i - 1  # orig: merge_ind = i - 1
+        else:  # orig: else:
+            merge_ind = i + 1  # orig: merge_ind = i + 1
+
+        if merge_ind < 0 or merge_ind >= len(sequential_clusters):  # orig: (no guard)
+            break  # orig: (no guard)
 
         sequential_clusters[i] = sorted(sequential_clusters[merge_ind] + sequential_clusters[i])
         del sequential_clusters[merge_ind]
