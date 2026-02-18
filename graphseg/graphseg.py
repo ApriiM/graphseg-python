@@ -6,7 +6,12 @@ from genutility.file import copen
 from genutility.gensim import KeyedVectors
 from genutility.nlp import load_freqs
 from genutility.scipy import linear_sum_assignment_cost
-from networkx import from_scipy_sparse_matrix
+try:  # orig: from networkx import from_scipy_sparse_matrix
+    from networkx import (  # orig: from networkx import from_scipy_sparse_matrix
+        from_scipy_sparse_array as from_scipy_sparse_matrix,  # orig: from_scipy_sparse_matrix
+    )
+except ImportError:  # orig: from networkx import from_scipy_sparse_matrix
+    from networkx import from_scipy_sparse_matrix  # orig: from networkx import from_scipy_sparse_matrix
 from networkx.algorithms.clique import find_cliques
 from scipy.sparse import dok_matrix
 
@@ -92,7 +97,7 @@ def word_dissimilarity_matrix(
 ) -> np.ndarray:
 
     maxlen = max(len(tokens_a), len(tokens_b))
-    dissimilarities = np.ones((maxlen, maxlen), dtype=np.float)
+    dissimilarities = np.ones((maxlen, maxlen), dtype=float)  # orig: dtype=np.float
 
     for k, token_a in enumerate(tokens_a):
         for l, token_b in enumerate(tokens_b):
@@ -135,7 +140,7 @@ class GraphBuilder:
         self, snippets: List["Span"], ic: InformationContent, wvs: WordVectorSpace
     ) -> dok_matrix:
 
-        similarity_matrix = dok_matrix((len(snippets), len(snippets)), dtype=np.float)
+        similarity_matrix = dok_matrix((len(snippets), len(snippets)), dtype=float)  # orig: dtype=np.float
 
         for i in range(0, len(snippets) - 1):
             for j in range(i + 1, min(len(snippets), i + self.localizationSize)):
